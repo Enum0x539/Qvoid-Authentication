@@ -51,7 +51,7 @@ Credentials credentials = new Credentials()
 
 AuthSystem auth = new AuthSystem(credentials);
 
-//Now you can use the functions of the auth system, I will create short documentation later.
+//Now you can use the functions of the auth system, I will create short a documentation later.
 ```
 
 # LEGAL DISCLAIMER
