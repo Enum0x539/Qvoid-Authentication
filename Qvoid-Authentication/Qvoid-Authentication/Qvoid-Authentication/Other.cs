@@ -634,7 +634,7 @@ namespace Qvoid_Authentication
             public static string Value()
             {
                 if (string.IsNullOrEmpty(fingerPrint))
-                    fingerPrint = GetHash(Encryption.ComputeSha256Hash(/*"CPU >> " + CpuId() + "\r\nBIOS >> " + BiosId() +*/ "\r\nBASE >> " + BaseId() + /*"\r\nDISK >> "+ DiskId() + */"\r\nVIDEO >> " + VideoId() + "\r\nMAC >> " + MacId()));
+                    fingerPrint = GetHash(Encryption.ComputeSha256Hash("\r\nBASE >> " + BaseId() + "\r\nVIDEO >> " + VideoId() + "\r\nMAC >> " + MacId()));
 
                 return fingerPrint;
             }
