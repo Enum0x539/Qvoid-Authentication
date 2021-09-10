@@ -1,5 +1,5 @@
 # Qvoid-Authentication
-Advanced authentication system, unlimited &amp; free to use!
+Advanced authentication system, can be used by everyone for free!
 
 Stability: Experimental ⤵️ <br><br>
 [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
