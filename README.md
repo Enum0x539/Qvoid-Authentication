@@ -19,14 +19,12 @@ Have fun 😝
 * Blacklist system.
 * Some state functions.
 * HWID Lock.
+* Encryption system.
 * Licenses with specific duration.
 * And some general functions such as Login, Register, Create License.
 
 # Plans:
-* Add more optimization.
-* Make the library more user-friendly.
 * Make a Documentation.
-* Explain what everything stands for.
 * Upload the auto-update system (it's already ready but I'm lazy to upload).
 
 # Getting started:
