@@ -5,7 +5,7 @@ Stability: Experimental ⤵️ <br><br>
 [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
 # Some information:
-I made this authentication system for one of my programs, I decided to release it as a library but; **this project is undone yet!**
+I made this authentication system for one of my programs, I decided to release it as a library (Converting everything to user-friendly library); **this project is undone yet!**
 
 If you have found some bug that you would like to be fixed or you just want to give a suggestion, open an issue on the Issues tab.
 
