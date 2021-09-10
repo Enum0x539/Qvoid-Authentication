@@ -16,16 +16,16 @@ namespace Qvoid.Authentication
 {
     static public class Encryption
     {
-        private static Random _random = new Random();
+        static private Random _random = new Random();
 
-        private static string GetHexString(byte[] data) => BitConverter.ToString(data);
+        static private string GetHexString(byte[] data) => BitConverter.ToString(data);
 
-        private static byte[] StringToByteArray(string hex) => (from x in Enumerable.Range(0, hex.Length)
+        static private byte[] StringToByteArray(string hex) => (from x in Enumerable.Range(0, hex.Length)
                                                                 where x % 2 == 0
                                                                 select Convert.ToByte(hex.Substring(x, 2), 16)).ToArray<byte>();
-        public static string MD5(string Input) => GetHexString(new MD5CryptoServiceProvider().ComputeHash(new ASCIIEncoding().GetBytes(Input)));
+        static public string MD5(string Input) => GetHexString(new MD5CryptoServiceProvider().ComputeHash(new ASCIIEncoding().GetBytes(Input)));
 
-        public static string StrXOR(string input, byte key, bool encrypt)
+        static public string StrXOR(string input, byte key, bool encrypt)
         {
             Thread.Sleep(20);
 
@@ -52,7 +52,7 @@ namespace Qvoid.Authentication
             return output;
         }
 
-        public static string StrXOR(string input, bool encrypt, int Length = 1000)
+        static public string StrXOR(string input, bool encrypt, int Length = 1000)
         {
             Thread.Sleep(20);
 
@@ -83,7 +83,7 @@ namespace Qvoid.Authentication
             return output;
         }
 
-        public static string StrXOR(string input, string key, bool encrypt)
+        static public string StrXOR(string input, string key, bool encrypt)
         {
             Thread.Sleep(20);
 
@@ -113,22 +113,22 @@ namespace Qvoid.Authentication
             return output;
         }
 
-        public static string ROT(string value, int Type = 13)
+        static public string ROT(string value, int Type = 13)
         {
             return !string.IsNullOrEmpty(value) ? new string(value.Select(x => (x >= 'a' && x <= 'z') ? (char)((x - 'a' + Type) % 26 + 'a') : ((x >= 'A' && x <= 'Z') ? (char)((x - 'A' + Type) % 26 + 'A') : x)).ToArray()) : value;
         }
 
-        public static string Base64Encode(string plainText)
+        static public string Base64Encode(string plainText)
         {
             return Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
         }
 
-        public static string Base64Decode(string base64EncodedData)
+        static public string Base64Decode(string base64EncodedData)
         {
             return Encoding.UTF8.GetString(Convert.FromBase64String(base64EncodedData));
         }
 
-        public static string ComputeSha256Hash(string rawData)
+        static public string ComputeSha256Hash(string rawData)
         {
             using (SHA256 sha256Hash = SHA256.Create())
             {
@@ -141,14 +141,14 @@ namespace Qvoid.Authentication
             }
         }
 
-        public static string SHA256CheckSum(string filePath)
+        static public string SHA256CheckSum(string filePath)
         {
             using (SHA256 SHA256 = SHA256Managed.Create())
             using (FileStream fileStream = File.OpenRead(filePath))
                 return Convert.ToBase64String(SHA256.ComputeHash(fileStream));
         }
 
-        public static string GenerateKey(int size = 1000)
+        static public string GenerateKey(int size = 1000)
         {
             string output = "";
 
@@ -164,7 +164,7 @@ namespace Qvoid.Authentication
 
     static public class Strings
     {
-        public static string MakeWarnString(string username)
+        static public string MakeWarnString(string username)
         {
             return "**IP Address: **" + Security.GetPublicIpAddress() + "\r\n" +
                    "**Region: **" + RegionInfo.CurrentRegion.ThreeLetterISORegionName + "\r\n" +
@@ -178,7 +178,7 @@ namespace Qvoid.Authentication
                    "Don't mess with the best (;";
         }
 
-        public static string MakeLicenseString(string username, string license)
+        static public string MakeLicenseString(string username, string license)
         {
             return "**IP Address: **" + Security.GetPublicIpAddress() + "\r\n" +
                    "**Region: **" + RegionInfo.CurrentRegion.ThreeLetterISORegionName + "\r\n" +
@@ -191,7 +191,7 @@ namespace Qvoid.Authentication
                    "\r\n" + username + " created a new license key: " + license + ".";
         }
 
-        public static string MakeDebugString(string debuggerName)
+        static public string MakeDebugString(string debuggerName)
         {
             return "**Debugger: **" + debuggerName + "\r\n" +
                    "**IP Address: **" + Security.GetMachineIdentifier() + "\r\n" +
@@ -203,7 +203,7 @@ namespace Qvoid.Authentication
                    "**Local Time: **" + Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss") + "\r\n";
         }
 
-        public static string MakeLoginString(Database.UserData userData)
+        static public string MakeLoginString(Database.UserData userData)
         {
             return "**Username: **" + (userData == null ? "Trial" : userData.Username) + "\r\n" +
                    "**IP Address: **" + (userData == null ? Security.GetMachineIdentifier() : userData.LastIpAddress) + "\r\n" +
@@ -213,7 +213,7 @@ namespace Qvoid.Authentication
                    "**Local Time: **" + (userData == null ? Internals.GetNetworkTime() : userData.LastLogin).ToString("dd/MM/yyyy HH:mm:ss") + "\r\n";
         }
 
-        public static string MakeRegisterString(Database.UserData userData)
+        static public string MakeRegisterString(Database.UserData userData)
         {
             return "**__Software Credentials__**\r\n" +
                    "**Username: **" + userData.Username + "\r\n" +
@@ -229,9 +229,9 @@ namespace Qvoid.Authentication
 
     internal class Internals
     {
-        public static byte[] Updater = new byte[] { };
+        static public byte[] Updater = new byte[] { };
 
-        public static DateTime GetNetworkTime()
+        static public DateTime GetNetworkTime()
         {
             const string ntpServer = "time.windows.com";
 
@@ -284,7 +284,7 @@ namespace Qvoid.Authentication
             }
         }
 
-        private static uint SwapEndianness(ulong x)
+        static private uint SwapEndianness(ulong x)
         {
             return (uint)(((x & 0x000000ff) << 24) +
                           ((x & 0x0000ff00) << 8)  +
@@ -520,7 +520,7 @@ namespace Qvoid.Authentication
             public string URL
             { get; private set; }
 
-            public static bool Delete(string url)
+            static public bool Delete(string url)
             {
                 HttpWebRequest request = (HttpWebRequest)WebRequest.Create(url);
                 request.ContentType = "application/json";
@@ -600,9 +600,9 @@ namespace Qvoid.Authentication
     {
         public class FingerPrint
         {
-            private static string fingerPrint = string.Empty;
+            static private string fingerPrint = string.Empty;
 
-            public static string Value()
+            static public string Value()
             {
                 if (string.IsNullOrEmpty(fingerPrint))
                     fingerPrint = GetHash(Encryption.ComputeSha256Hash("\r\nBASE >> " + BaseId() + "\r\nVIDEO >> " + VideoId() + "\r\nMAC >> " + MacId()));
@@ -610,7 +610,7 @@ namespace Qvoid.Authentication
                 return fingerPrint;
             }
 
-            private static string GetHash(string s)
+            static private string GetHash(string s)
             {
                 MD5 sec = new MD5CryptoServiceProvider();
                 ASCIIEncoding enc = new ASCIIEncoding();
@@ -618,7 +618,7 @@ namespace Qvoid.Authentication
                 return GetHexString(sec.ComputeHash(bt));
             }
 
-            private static string GetHexString(byte[] bt)
+            static private string GetHexString(byte[] bt)
             {
                 string s = string.Empty;
                 for (int i = 0; i < bt.Length; i++)
@@ -643,7 +643,7 @@ namespace Qvoid.Authentication
 
             #region Original Device ID Getting Code
             //Return a hardware identifier
-            private static string identifier
+            static private string identifier
             (string wmiClass, string wmiProperty, string wmiMustBeTrue)
             {
                 string result = "";
@@ -671,7 +671,7 @@ namespace Qvoid.Authentication
                 return result;
             }
             //Return a hardware identifier
-            private static string identifier(string wmiClass, string wmiProperty)
+            static private string identifier(string wmiClass, string wmiProperty)
             {
                 string result = "";
                 ManagementClass mc = new ManagementClass(wmiClass);
@@ -693,7 +693,7 @@ namespace Qvoid.Authentication
             }
             
             //Motherboard ID
-            private static string BaseId()
+            static private string BaseId()
             {
                 return identifier("Win32_BaseBoard", "Model")
                 + identifier("Win32_BaseBoard", "Manufacturer")
@@ -701,13 +701,13 @@ namespace Qvoid.Authentication
                 + identifier("Win32_BaseBoard", "SerialNumber");
             }
             //Primary video controller ID
-            private static string VideoId()
+            static private string VideoId()
             {
                 return identifier("Win32_VideoController", "DriverVersion")
                 + identifier("Win32_VideoController", "Name");
             }
             //First enabled network card ID
-            private static string MacId()
+            static private string MacId()
             {
                 return identifier("Win32_NetworkAdapterConfiguration",
                     "MACAddress", "IPEnabled");
@@ -715,7 +715,7 @@ namespace Qvoid.Authentication
             #endregion
         }
 
-        public static string GetPublicIpAddress()
+        static public string GetPublicIpAddress()
         {
             try
             {
@@ -725,7 +725,7 @@ namespace Qvoid.Authentication
             catch { return "Error"; }
         }
 
-        public static string GetInternalIPAddress()
+        static public string GetInternalIPAddress()
         {
             foreach (var ip in Dns.GetHostEntry(Dns.GetHostName()).AddressList)
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
@@ -734,7 +734,7 @@ namespace Qvoid.Authentication
             return "";
         }
 
-        public static string GetMachineIdentifier()
+        static public string GetMachineIdentifier()
         {
             return FingerPrint.Value();
         }
