@@ -1,12 +1,13 @@
 # Qvoid-Authentication
 Advanced authentication system, unlimited &amp; free to use!
 
+Stability: Experimental ⤵️
 [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
 # Some information:
-I made this authentication system for one of my programs, I decided to release it as a library but, this project is undone yet!
+I made this authentication system for one of my programs, I decided to release it as a library but; **this project is undone yet!**
 
-If you found some bug that you would like it to be fixed or just give suggestion open an issue on the Issues tab.
+If you have found some bug that you would like to be fixed or you just want to give a suggestion, open an issue on the Issues tab.
 
 I think this library is better than the paid authentication systems because FireBase is pretty fast and I tried to keep the code as much optimized as I can (for better performance).
 
