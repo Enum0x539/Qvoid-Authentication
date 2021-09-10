@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
 using System.Drawing;
 using System.Globalization;
@@ -12,40 +12,18 @@ using System.Text;
 using System.Text.RegularExpressions;
 using System.Threading;
 
-namespace Qvoid_Authentication
+namespace Qvoid.Authentication
 {
     public static class Encryption
     {
-        private static string GetHexString(byte[] bt)
-        {
-            string s = string.Empty;
-            for (int i = 0; i < bt.Length; i++)
-            {
-                byte b = bt[i];
-                int n, n1, n2;
-                n = (int)b;
-                n1 = n & 15;
-                n2 = (n >> 4) & 15;
-                if (n2 > 9)
-                    s += ((char)(n2 - 10 + (int)'A')).ToString();
-                else
-                    s += n2.ToString();
-                if (n1 > 9)
-                    s += ((char)(n1 - 10 + (int)'A')).ToString();
-                else
-                    s += n1.ToString();
-                if ((i + 1) != bt.Length && (i + 1) % 2 == 0) s += "-";
-            }
-            return s;
-        }
+        private static Random _random = new Random();
 
-        private static byte[] StringToByteArray(string hex)
-        {
-            //Haha belongs to the Shabak
-            return (from x in Enumerable.Range(0, hex.Length)
-                    where x % 2 == 0
-                    select Convert.ToByte(hex.Substring(x, 2), 16)).ToArray<byte>();
-        }
+        private static string GetHexString(byte[] data) => BitConverter.ToString(data);
+
+        private static byte[] StringToByteArray(string hex) => (from x in Enumerable.Range(0, hex.Length)
+                                                                where x % 2 == 0
+                                                                select Convert.ToByte(hex.Substring(x, 2), 16)).ToArray<byte>();
+        public static string MD5(string Input) => GetHexString(new MD5CryptoServiceProvider().ComputeHash(new ASCIIEncoding().GetBytes(Input)));
 
         public static string StrXOR(string input, byte key, bool encrypt)
         {
@@ -163,28 +141,21 @@ namespace Qvoid_Authentication
             }
         }
 
-        public static string MD5(string Input)
-        {
-            return GetHexString(new MD5CryptoServiceProvider().ComputeHash(new ASCIIEncoding().GetBytes(Input)));
-        }
         public static string SHA256CheckSum(string filePath)
         {
             using (SHA256 SHA256 = SHA256Managed.Create())
-            {
-                using (FileStream fileStream = File.OpenRead(filePath))
-                    return Convert.ToBase64String(SHA256.ComputeHash(fileStream));
-            }
+            using (FileStream fileStream = File.OpenRead(filePath))
+                return Convert.ToBase64String(SHA256.ComputeHash(fileStream));
         }
 
         public static string GenerateKey(int size = 1000)
         {
-            Random r = new Random();
             string output = "";
 
             for (int i = 0; i < size; ++i)
             {
-                int[] rs = { r.Next('0', '9' + 1), r.Next('a', 'z' + 1), r.Next('A', 'Z' + 1) };
-                output += (char)rs[r.Next(3)];
+                int[] rs = { _random.Next('0', '9' + 1), _random.Next('a', 'z' + 1), _random.Next('A', 'Z' + 1) };
+                output += (char)rs[_random.Next(3)];
             }
 
             return output.ToUpper();
@@ -316,9 +287,9 @@ namespace Qvoid_Authentication
         private static uint SwapEndianness(ulong x)
         {
             return (uint)(((x & 0x000000ff) << 24) +
-                           ((x & 0x0000ff00) << 8) +
-                           ((x & 0x00ff0000) >> 8) +
-                           ((x & 0xff000000) >> 24));
+                          ((x & 0x0000ff00) << 8)  +
+                          ((x & 0x00ff0000) >> 8)  +
+                          ((x & 0xff000000) >> 24));
         }
     }
 
@@ -406,10 +377,11 @@ namespace Qvoid_Authentication
                     footer += String.IsNullOrEmpty(this.Footer.IconURL) ? "}" : ($",\"icon_url:" + "\"" + this.Footer.IconURL + "\"}");
                 }
 
-                string field = this.Fields == null ? "" : $"\"fields\":[";
+                string field = this.Fields == null ? "" :  $"\"fields\":[";
                 this.Fields.ForEach(item => field += "{" + $"\"name\": \"{item.Name}\"," +
                                                            $"\"value\": \"{item.Value}\"," +
                                                            $"\"inline\": {(item.Inline ? "true" : "false")}" + "},");
+
                 field = (field[field.Length - 1] == ',' ? field.Remove(field.Length - 1, 1) : "") + "]";
                 field = field == "\"fields\":[]" ? "" : field;
                 field += (field != "" && footer != "\"footer\":[]") ? "," : "";
@@ -425,7 +397,6 @@ namespace Qvoid_Authentication
                                     "\"embed\":{" +
                                     $"\"description\":\"{this.Description}\"," +
                                     $"{title}" +
-                                    //$"\"title\":\"{this.Title}\"" +
                                     $"{color}" +
                                     $"{time}" +
                                     $"{field}" +
@@ -703,7 +674,7 @@ namespace Qvoid_Authentication
             private static string identifier(string wmiClass, string wmiProperty)
             {
                 string result = "";
-                ManagementClass mc = new System.Management.ManagementClass(wmiClass);
+                ManagementClass mc = new ManagementClass(wmiClass);
                 ManagementObjectCollection moc = mc.GetInstances();
                 foreach (ManagementObject mo in moc)
                 {
@@ -720,46 +691,7 @@ namespace Qvoid_Authentication
                 }
                 return result;
             }
-            private static string CpuId()
-            {
-                //Uses first CPU identifier available in order of preference
-                //Don't get all identifiers, as it is very time consuming
-
-                string retVal = /*identifier("Win32_Processor", "UniqueId")*/ "";
-                if (retVal == "") //If no UniqueID, use ProcessorID
-                {
-                    retVal = identifier("Win32_Processor", "ProcessorId");
-                    if (retVal == "") //If no ProcessorId, use Name
-                    {
-                        retVal = identifier("Win32_Processor", "Name");
-                        if (retVal == "") //If no Name, use Manufacturer
-                        {
-                            retVal = identifier("Win32_Processor", "Manufacturer");
-                        }
-                        //Add clock speed for extra security
-                        retVal += identifier("Win32_Processor", "MaxClockSpeed");
-                    }
-                }
-                return retVal;
-            }
-            //BIOS Identifier
-            private static string BiosId()
-            {
-                return identifier("Win32_BIOS", "Manufacturer")
-                + identifier("Win32_BIOS", "SMBIOSBIOSVersion")
-                + identifier("Win32_BIOS", "IdentificationCode")
-                + identifier("Win32_BIOS", "SerialNumber")
-                + identifier("Win32_BIOS", "ReleaseDate")
-                + identifier("Win32_BIOS", "Version");
-            }
-            //Main physical hard drive ID
-            private static string DiskId()
-            {
-                return identifier("Win32_DiskDrive", "Model")
-                + identifier("Win32_DiskDrive", "Manufacturer")
-                + identifier("Win32_DiskDrive", "Signature")
-                + identifier("Win32_DiskDrive", "TotalHeads");
-            }
+            
             //Motherboard ID
             private static string BaseId()
             {
