@@ -18,12 +18,14 @@ Have fun 😝
 * Killswitch.
 * Blacklist system.
 * Some state functions.
+* HWID Lock.
+* Licenses with specific duration.
 * And some general functions such as Login, Register, Create License.
 
 # Plans:
 * Add more optimization.
-* Easier use.
-* Documentation.
+* Make the library more user-friendly.
+* Make a Documentation.
 * Explain what everything stands for.
 * Upload the auto-update system (it's already ready but I'm lazy to upload).
 
