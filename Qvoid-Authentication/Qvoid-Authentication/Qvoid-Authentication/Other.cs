@@ -14,7 +14,7 @@ using System.Threading;
 
 namespace Qvoid.Authentication
 {
-    public static class Encryption
+    static public class Encryption
     {
         private static Random _random = new Random();
 
@@ -162,7 +162,7 @@ namespace Qvoid.Authentication
         }
     }
 
-    public static class Strings
+    static public class Strings
     {
         public static string MakeWarnString(string username)
         {
