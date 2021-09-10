@@ -1,4 +1,4 @@
-﻿using Newtonsoft.Json;
+using Newtonsoft.Json;
 using Newtonsoft.Json.Linq;
 using System;
 using System.Diagnostics;
@@ -7,7 +7,7 @@ using System.Net;
 using System.Text;
 using System.Windows.Forms;
 
-namespace Qvoid_Authentication
+namespace Qvoid.Authentication
 {
     public abstract class FireClient
     {
@@ -20,7 +20,7 @@ namespace Qvoid_Authentication
             if (String.IsNullOrEmpty(baseAddress))
                 throw new Exception("The base address was null.");
 
-            //Yes, it can be done with WebClient but I prefer HttpWebRequet.
+            //Can be done with WebClient but I prefer HttpWebRequet.
             HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{baseAddress}?{(String.IsNullOrEmpty(this.AuthSecret) ? "" : $"auth={this.AuthSecret}")}");
             request.Method = "GET";
             try
@@ -110,16 +110,23 @@ namespace Qvoid_Authentication
 
     public class AuthSystem : FireClient
     {
+        /// <summary>
+        /// The webhooks structure
+        /// </summary>
         internal static class Webhooks
         {
-            public static Discord.Webhook Login = null;
-            public static Discord.Webhook Register = null;
+            public static Discord.Webhook Login        = null;
+            public static Discord.Webhook Register     = null;
             public static Discord.Webhook Unauthorized = null;
-            public static Discord.Webhook License = null;
+            public static Discord.Webhook License      = null;
         }
 
         public Database.UserData LoggedUser { get; internal set; }
 
+        /// <summary>
+        /// Connecting into the database and checks for: new update, killswitch and the webhooks.
+        /// </summary>
+        /// <param name="Credentials"></param>
         public AuthSystem(Credentials Credentials) : base(Credentials.BaseAddress, Credentials.Token)
         {
             //Checking if the client has connected.
@@ -133,7 +140,7 @@ namespace Qvoid_Authentication
             if (new Version($"{Settings["Version"]}").CompareTo(Credentials.Version) > 0)
             {
                 //Update is required.
-                var result = MessageBox.Show($"This distribution of the software is outdated; Would you like to install the new version?", "", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
+                var result = MessageBox.Show($"This distribution of the software is outdated; Would you like to install the new version?", "Qvoid Authentication", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (result == DialogResult.Yes)
                 {
                     string tempPath = Path.GetTempPath() + "\\Updater.exe";
@@ -152,6 +159,13 @@ namespace Qvoid_Authentication
             this.UpdateWebhooks($"{Settings["Webhooks"]["Login"]}", $"{Settings["Webhooks"]["Register"]}", $"{Settings["Webhooks"]["Unautorized"]}", $"{Settings["Webhooks"]["License"]}");
         }
 
+        /// <summary>
+        /// Updating all the webhooks (used to synchronize the webhooks with the database)
+        /// </summary>
+        /// <param name="Login"></param>
+        /// <param name="Register"></param>
+        /// <param name="Warns"></param>
+        /// <param name="License"></param>
         private void UpdateWebhooks(string Login, string Register, string Warns, string License)
         {
             Webhooks.Login = new Discord.Webhook(Login);
@@ -161,6 +175,9 @@ namespace Qvoid_Authentication
             Webhooks.Login = new Discord.Webhook(Login);
         }
 
+        /// <summary>
+        /// Creating the database structure for the first time and registering a user which is random
+        /// </summary>
         public void InitializeDatabase()
         {
             DateTime regTime = DateTime.UtcNow;
@@ -170,6 +187,7 @@ namespace Qvoid_Authentication
             DateTime licenseTime = DateTime.MinValue;
             licenseTime = licenseTime.AddDays(0).AddMonths(0).AddYears(3000);
 
+            //Creating license for our system user.
             Database.LicenseKey license = new Database.LicenseKey() { Claimer = "System", LicenseTime = licenseTime };
             if (!SetData<Database.LicenseKey>($"License Keys/databaseInitKey", license))
             {
@@ -177,12 +195,13 @@ namespace Qvoid_Authentication
                 return;
             }
 
+            //Formatting the random HWID to the regular format we use.
             string HWID = Encryption.MD5(Encryption.ComputeSha256Hash(Encryption.GenerateKey()));
             Database.UserData User = new Database.UserData
             {
                 Admin = true,
                 Username = Username,
-                Password = Encryption.StrXOR(Password, Encryption.ROT(Username, 13), true),
+                Password = Encryption.ComputeSha256Hash(Password),
                 DesktopName = "Administrator",
                 HWID = HWID,
                 LastLogin = regTime,
@@ -207,23 +226,31 @@ namespace Qvoid_Authentication
             SetData($"Registered HWIDs/{HWID}", User.Username);
         }
 
-        public void FormatDatabase()
-        {
-            DeleteData("");
-        }
+        /// <summary>
+        /// Formmating the database.
+        /// </summary>
+        public void FormatDatabase() => DeleteData("");
 
         #region Blacklist
+        /// <summary>
+        /// Checks if the given HWID is blacklisted in the database.
+        /// </summary>
+        /// <param name="HWID"></param>
+        /// <returns>User blacklist state</returns>
         public bool IsBlacklisted(string HWID)
         {
             string[] hwids = GetData<string>("Blacklist").Split(',');
             foreach (string hwid in hwids)
-            {
                 if (hwid == HWID)
                     return true;
-            }
+
             return false;
         }
 
+        /// <summary>
+        /// Adds HWID to the blacklist.
+        /// </summary>
+        /// <param name="HWID"></param>
         public void AddBlacklist(string HWID)
         {
             if (IsBlacklisted(HWID))
@@ -236,6 +263,10 @@ namespace Qvoid_Authentication
                 SetData("Blacklist", hwids + "," + HWID);
         }
 
+        /// <summary>
+        /// Removes HWID from the blacklist.
+        /// </summary>
+        /// <param name="HWID"></param>
         public void RemoveBlacklist(string HWID)
         {
             if (!IsBlacklisted(HWID))
@@ -326,7 +357,7 @@ namespace Qvoid_Authentication
         public Database.UserData Login(string username, string password)
         {
             Database.UserData userData = GetData<Database.UserData>($"User Data/{username}");
-            if (userData == null || userData.Password != Encryption.StrXOR(password, Encryption.ROT(username, 13), true))
+            if (userData == null || userData.Password != Encryption.ComputeSha256Hash(password))
             {
                 MessageBox.Show("Username or password is incorrect.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return null;
@@ -361,7 +392,7 @@ namespace Qvoid_Authentication
 
             if (IsBlacklisted(Security.GetMachineIdentifier()))
             {
-                //Blacklisted HWID
+                Environment.Exit(0);
                 return null;
             }
 
@@ -441,7 +472,7 @@ namespace Qvoid_Authentication
 
                 Webhooks.Register.Send(embed);
 
-                MessageBox.Show("We successfully Registered your new account!\r\nHave fun using our Tool (:", "Success!", MessageBoxButtons.OK, MessageBoxIcon.None);
+                MessageBox.Show("We successfully registered your new account!", "Success!", MessageBoxButtons.OK, MessageBoxIcon.None);
                 return User;
             }
         }
