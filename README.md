@@ -9,7 +9,7 @@ I made this authentication system for one of my programs, I decided to release i
 
 If you have found some bug that you would like to be fixed or you just want to give a suggestion, open an issue on the Issues tab.
 
-I think this library is better than the paid authentication systems because FireBase is pretty fast and I tried to keep the code as much optimized as I can (for better performance).
+I think this library is better than lots of the paid authentication systems because FireBase is pretty fast and I tried to keep the code as much optimized as I can.
 
 Have fun 😝
 
