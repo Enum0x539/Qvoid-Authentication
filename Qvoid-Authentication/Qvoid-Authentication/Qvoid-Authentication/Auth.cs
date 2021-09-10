@@ -115,10 +115,10 @@ namespace Qvoid.Authentication
         /// </summary>
         internal static class Webhooks
         {
-            public static Discord.Webhook Login        = null;
-            public static Discord.Webhook Register     = null;
-            public static Discord.Webhook Unauthorized = null;
-            public static Discord.Webhook License      = null;
+            static public Discord.Webhook Login        = null;
+            static public Discord.Webhook Register     = null;
+            static public Discord.Webhook Unauthorized = null;
+            static public Discord.Webhook License      = null;
         }
 
         public Database.UserData LoggedUser { get; internal set; }
