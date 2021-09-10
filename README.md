@@ -1,7 +1,7 @@
 # Qvoid-Authentication
 Advanced authentication system, unlimited &amp; free to use!
 
-Stability: Experimental ⤵️
+Stability: Experimental ⤵️ <br><br>
 [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
 # Some information:
