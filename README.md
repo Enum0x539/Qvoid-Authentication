@@ -36,7 +36,7 @@ It will be much easier learning the FireBase interface by yourself or watching s
 After you have a FireBase account and you are connected, create a project and then create a "Realtime Database".
 Go to Project Settings -> Service Account -> Database Secrets and copy the key that is listed there.
 
-```
+```cs
 //Creating the credentials
 Credentials credentials = new Credentials()
 {
