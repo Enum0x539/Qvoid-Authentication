@@ -21,7 +21,7 @@ namespace Qvoid.Authentication
                 throw new Exception("The base address was null.");
 
             //Can be done with WebClient but I prefer HttpWebRequet.
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{baseAddress}?{(String.IsNullOrEmpty(this.AuthSecret) ? "" : $"auth={this.AuthSecret}")}");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{baseAddress}?{(String.IsNullOrEmpty(this.AuthSecret) ? string.Empty : $"auth={this.AuthSecret}")}");
             request.Method = "GET";
             try
             {
@@ -50,8 +50,8 @@ namespace Qvoid.Authentication
 
         public T GetData<T>(string path)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{this.BaseAddress}{path}.json?{(String.IsNullOrEmpty(this.AuthSecret) ? "" : $"auth={this.AuthSecret}")}");
-            string responseStr = "";
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{this.BaseAddress}{path}.json?{(String.IsNullOrEmpty(this.AuthSecret) ? string.Empty : $"auth={this.AuthSecret}")}");
+            string responseStr = string.Empty;
             try
             {
                 responseStr = new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd();
@@ -63,7 +63,7 @@ namespace Qvoid.Authentication
 
         public bool SetData<T>(string path, T data)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{this.BaseAddress}{path}.json?{(String.IsNullOrEmpty(this.AuthSecret) ? "" : $"auth={this.AuthSecret}")}");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{this.BaseAddress}{path}.json?{(String.IsNullOrEmpty(this.AuthSecret) ? string.Empty : $"auth={this.AuthSecret}")}");
             request.Method = "PUT";
 
             byte[] requestBytes = new ASCIIEncoding().GetBytes(JsonConvert.SerializeObject(data));
@@ -79,7 +79,7 @@ namespace Qvoid.Authentication
 
         public bool DeleteData(string path)
         {
-            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{this.BaseAddress}{path}.json?{(String.IsNullOrEmpty(this.AuthSecret) ? "" : $"auth={this.AuthSecret}")}");
+            HttpWebRequest request = (HttpWebRequest)WebRequest.Create($"{this.BaseAddress}{path}.json?{(String.IsNullOrEmpty(this.AuthSecret) ? string.Empty : $"auth={this.AuthSecret}")}");
             request.Method = "DELETE";
 
             return ((HttpWebResponse)request.GetResponse()).StatusCode == HttpStatusCode.OK;
@@ -143,7 +143,7 @@ namespace Qvoid.Authentication
                 var result = MessageBox.Show($"This distribution of the software is outdated; Would you like to install the new version?", "Qvoid Authentication", MessageBoxButtons.YesNo, MessageBoxIcon.Information);
                 if (result == DialogResult.Yes)
                 {
-                    string tempPath = Path.GetTempPath() + "\\Updater.exe";
+                    string tempPath = $"{Path.GetTempPath()}\\Updater.exe";
                     File.WriteAllBytes(tempPath, Internals.Updater);
                     Process.Start(tempPath, $"{Settings["Download"]} \"{Application.StartupPath.Replace("\\", "/")}\"");
                 }
@@ -212,12 +212,12 @@ namespace Qvoid.Authentication
 
             SetData("DisabledUsers/", $"{User.Username}, ");
 
-            SetData("Settings/Webhooks/License", "");
-            SetData("Settings/Webhooks/Login", "");
-            SetData("Settings/Webhooks/Register", "");
-            SetData("Settings/Webhooks/Unautorized", "");
+            SetData("Settings/Webhooks/License", string.Empty);
+            SetData("Settings/Webhooks/Login", string.Empty);
+            SetData("Settings/Webhooks/Register", string.Empty);
+            SetData("Settings/Webhooks/Unautorized", string.Empty);
 
-            SetData("Settings/Download", "");
+            SetData("Settings/Download", string.Empty);
             SetData("Settings/KillSwitch", false);
             SetData("Settings/Version", "1.0.0");
 
@@ -229,7 +229,7 @@ namespace Qvoid.Authentication
         /// <summary>
         /// Formmating the database.
         /// </summary>
-        public void FormatDatabase() => DeleteData("");
+        public void FormatDatabase() => DeleteData(string.Empty);
 
         #region Blacklist
         /// <summary>
@@ -274,11 +274,11 @@ namespace Qvoid.Authentication
 
             string hwids = GetData<string>("Blacklist");
             if (hwids.Contains("," + HWID))
-                hwids = hwids.Replace("," + HWID, "");
+                hwids = hwids.Replace("," + HWID, string.Empty);
             else if (hwids.Contains(HWID + ","))
-                hwids = hwids.Replace(HWID + ",", "");
+                hwids = hwids.Replace(HWID + ",", string.Empty);
             else
-                hwids = hwids.Replace(HWID, "");
+                hwids = hwids.Replace(HWID, string.Empty);
 
             SetData<string>("Blacklist", hwids);
         }
@@ -302,13 +302,13 @@ namespace Qvoid.Authentication
 
             string users = GetData<string>("DisabledUsers");
             if (users.Contains("," + username))
-                users = users.Replace("," + username, "");
+                users = users.Replace("," + username, string.Empty);
 
             else if (users.Contains(username + ","))
-                users = users.Replace(username + ",", "");
+                users = users.Replace(username + ",", string.Empty);
 
             else
-                users = users.Replace(username, "");
+                users = users.Replace(username, string.Empty);
 
             SetData<string>("DisabledUsers", users);
         }
@@ -339,7 +339,7 @@ namespace Qvoid.Authentication
             DateTime licenseTime = DateTime.MinValue;
             licenseTime = licenseTime.AddDays(Days).AddMonths(Months).AddYears(Years);
 
-            Database.LicenseKey license = new Database.LicenseKey() { Claimer = "", LicenseTime = licenseTime };
+            Database.LicenseKey license = new Database.LicenseKey() { Claimer = string.Empty, LicenseTime = licenseTime };
             if (!SetData<Database.LicenseKey>($"License Keys/{Code}", license))
             {
                 MessageBox.Show("Internal database error.", "Databse error", MessageBoxButtons.OK, MessageBoxIcon.Error);

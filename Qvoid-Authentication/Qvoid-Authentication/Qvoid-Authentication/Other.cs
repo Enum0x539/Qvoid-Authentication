@@ -113,20 +113,11 @@ namespace Qvoid.Authentication
             return output;
         }
 
-        static public string ROT(string value, int Type = 13)
-        {
-            return !string.IsNullOrEmpty(value) ? new string(value.Select(x => (x >= 'a' && x <= 'z') ? (char)((x - 'a' + Type) % 26 + 'a') : ((x >= 'A' && x <= 'Z') ? (char)((x - 'A' + Type) % 26 + 'A') : x)).ToArray()) : value;
-        }
+        static public string ROT(string value, int Type = 13) => !string.IsNullOrEmpty(value) ? new string(value.Select(x => (x >= 'a' && x <= 'z') ? (char)((x - 'a' + Type) % 26 + 'a') : ((x >= 'A' && x <= 'Z') ? (char)((x - 'A' + Type) % 26 + 'A') : x)).ToArray()) : value;
 
-        static public string Base64Encode(string plainText)
-        {
-            return Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
-        }
+        static public string Base64Encode(string plainText) => Convert.ToBase64String(Encoding.UTF8.GetBytes(plainText));
 
-        static public string Base64Decode(string base64EncodedData)
-        {
-            return Encoding.UTF8.GetString(Convert.FromBase64String(base64EncodedData));
-        }
+        static public string Base64Decode(string base64EncodedData) => Encoding.UTF8.GetString(Convert.FromBase64String(base64EncodedData));
 
         static public string ComputeSha256Hash(string rawData)
         {
@@ -150,7 +141,7 @@ namespace Qvoid.Authentication
 
         static public string GenerateKey(int size = 1000)
         {
-            string output = "";
+            string output = string.Empty;
 
             for (int i = 0; i < size; ++i)
             {
@@ -164,67 +155,11 @@ namespace Qvoid.Authentication
 
     static public class Strings
     {
-        static public string MakeWarnString(string username)
-        {
-            return "**IP Address: **" + Security.GetPublicIpAddress() + "\r\n" +
-                   "**Region: **" + RegionInfo.CurrentRegion.ThreeLetterISORegionName + "\r\n" +
-                   "**HWID: **" + Security.GetMachineIdentifier() + "\r\n" +
-                   "**Computer Name: **" + Environment.UserName + "\r\n" +
-                   "**Desktop Name: **" + Environment.UserDomainName + "\r\n" +
-                   "**Operating System: **" + Environment.OSVersion + "\r\n" +
-                   "**Local Time: **" + Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss") + "\r\n" +
-
-                   "\r\nTried accessing " + username + "'s account.\r\n" +
-                   "Don't mess with the best (;";
-        }
-
-        static public string MakeLicenseString(string username, string license)
-        {
-            return "**IP Address: **" + Security.GetPublicIpAddress() + "\r\n" +
-                   "**Region: **" + RegionInfo.CurrentRegion.ThreeLetterISORegionName + "\r\n" +
-                   "**HWID: **" + Security.GetMachineIdentifier() + "\r\n" +
-                   "**Computer Name: **" + Environment.UserName + "\r\n" +
-                   "**Desktop Name: **" + Environment.UserDomainName + "\r\n" +
-                   "**Operating System: **" + Environment.OSVersion + "\r\n" +
-                   "**Local Time: **" + Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss") + "\r\n" +
-
-                   "\r\n" + username + " created a new license key: " + license + ".";
-        }
-
-        static public string MakeDebugString(string debuggerName)
-        {
-            return "**Debugger: **" + debuggerName + "\r\n" +
-                   "**IP Address: **" + Security.GetMachineIdentifier() + "\r\n" +
-                   "**Region: **" + RegionInfo.CurrentRegion.ThreeLetterISORegionName + "\r\n" +
-                   "**HWID: **" + Security.GetMachineIdentifier() + "\r\n" +
-                   "**Computer Name: **" + Environment.UserName + "\r\n" +
-                   "**Desktop Name: **" + Environment.UserDomainName + "\r\n" +
-                   "**Operating System: **" + Environment.OSVersion + "\r\n" +
-                   "**Local Time: **" + Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss") + "\r\n";
-        }
-
-        static public string MakeLoginString(Database.UserData userData)
-        {
-            return "**Username: **" + (userData == null ? "Trial" : userData.Username) + "\r\n" +
-                   "**IP Address: **" + (userData == null ? Security.GetMachineIdentifier() : userData.LastIpAddress) + "\r\n" +
-                   "**Region: **" + RegionInfo.CurrentRegion.ThreeLetterISORegionName + "\r\n" +
-                   "**HWID: **" + (userData == null ? Security.GetMachineIdentifier() : userData.HWID) + "\r\n" +
-                   "**Computer Name: **" + Environment.UserName + "\r\n" +
-                   "**Local Time: **" + (userData == null ? Internals.GetNetworkTime() : userData.LastLogin).ToString("dd/MM/yyyy HH:mm:ss") + "\r\n";
-        }
-
-        static public string MakeRegisterString(Database.UserData userData)
-        {
-            return "**__Software Credentials__**\r\n" +
-                   "**Username: **" + userData.Username + "\r\n" +
-                   "**Password: **" + userData.Password + "\r\n" +
-                   "**Administrator: **" + userData.Admin + "\r\n" +
-                   "**HWID: **" + userData.HWID + "\r\n" +
-                   "**Computer Name: **" + Environment.UserName + "\r\n" +
-                   "**Desktop Name: **" + userData.DesktopName + "\r\n" +
-                   "**Operating System: **" + Environment.OSVersion + "\r\n" +
-                   "**Local Time: **" + Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss") + "\r\n";
-        }
+        static public string MakeWarnString(string username) => $"**IP Address: **{Security.GetPublicIpAddress()}\r\n**Region: **{RegionInfo.CurrentRegion.ThreeLetterISORegionName}\r\n\n**HWID: **{Security.GetMachineIdentifier()}\r\n**Computer Name: **{Environment.UserName}\r\n**Desktop Name: **{Environment.UserDomainName}\r\n**Operating System: **{Environment.OSVersion}\r\n**Local Time: **{Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss")}\r\nDon't mess with the best (;";
+        static public string MakeLicenseString(string username, string license) => $"**IP Address: **{Security.GetPublicIpAddress()}\r\n**Region: **{RegionInfo.CurrentRegion.ThreeLetterISORegionName}\r\n\n**HWID: **{Security.GetMachineIdentifier()}\r\n**Computer Name: **{Environment.UserName}\r\n**Desktop Name: **{Environment.UserDomainName}\r\n**Operating System: **{Environment.OSVersion}\r\n**Local Time: **{Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss")}\r\n{username} created a new license key: {license}.";
+        static public string MakeDebugString(string debuggerName) => $"**Debugger: **{debuggerName}\r\n**IP Address: **{Security.GetPublicIpAddress()}\r\n**Region: **{RegionInfo.CurrentRegion.ThreeLetterISORegionName}\r\n\n**HWID: **{Security.GetMachineIdentifier()}\r\n**Computer Name: **{Environment.UserName}\r\n**Desktop Name: **{Environment.UserDomainName}\r\n**Operating System: **{Environment.OSVersion}\r\n**Local Time: **{Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss")}\r\n";
+        static public string MakeLoginString(Database.UserData userData) => $"**Username: **{(userData == null ? "Trial" : userData.Username)}\r\n**IP Address: **{(userData == null ? Security.GetMachineIdentifier() : userData.LastIpAddress)}\r\n**Region: **{RegionInfo.CurrentRegion.ThreeLetterISORegionName}\r\n**HWID: **{(userData == null ? Security.GetMachineIdentifier() : userData.HWID)}\r\n**Computer Name: **{Environment.UserName}\r\n**Local Time: **{(userData == null ? Internals.GetNetworkTime() : userData.LastLogin).ToString("dd/MM/yyyy HH:mm:ss")}\r\n";
+        static public string MakeRegisterString(Database.UserData userData) => $"**__Software Credentials__**\r\n**Username: **{userData.Username}\r\n**Password: **{userData.Password}\r\n**Administrator: **{userData.Admin}\r\n**HWID: **{userData.HWID}\r\n**Computer Name: **{Environment.UserName}\r\n**Desktop Name: **{userData.DesktopName}\r\n**Operating System: **{Environment.OSVersion}\r\n**Local Time: **{Internals.GetNetworkTime().ToString("dd/MM/yyyy HH:mm:ss")}\r\n";
     }
 
     internal class Internals
@@ -325,7 +260,7 @@ namespace Qvoid.Authentication
                 foreach (string field in fields)
                 {
                     int fieldLength = field.IndexOf('"', 2) - 2;
-                    string fieldValue = field.Substring(field.IndexOf(':') + 2).Replace("\"", "");
+                    string fieldValue = field.Substring(field.IndexOf(':') + 2).Replace("\"", string.Empty);
 
                     switch (field.Substring(2, fieldLength))
                     {
@@ -359,9 +294,9 @@ namespace Qvoid.Authentication
 
                         case "fields":
                             if (fieldValue == "[]") break;
-                            string[] fieldsValues = fieldValue.Replace("]", "").Replace("[", "").Split(',');
+                            string[] fieldsValues = fieldValue.Replace("]", string.Empty).Replace("[", string.Empty).Split(',');
                             foreach (string value in fields)
-                                embed.Fields.Add(new EmbedField(value.Replace("\"", "")));
+                                embed.Fields.Add(new EmbedField(value.Replace("\"", string.Empty)));
                             break;
                     }
                 }
@@ -370,28 +305,28 @@ namespace Qvoid.Authentication
 
             public override string ToString()
             {
-                string footer = "";
+                string footer = string.Empty;
                 if (this.Footer != null)
                 {
                     footer = $"\"footer\":" + "{" + $"\"text\":" + "\"" + this.Footer.Text + "\"";
                     footer += String.IsNullOrEmpty(this.Footer.IconURL) ? "}" : ($",\"icon_url:" + "\"" + this.Footer.IconURL + "\"}");
                 }
 
-                string field = this.Fields == null ? "" :  $"\"fields\":[";
+                string field = this.Fields == null ? string.Empty :  $"\"fields\":[";
                 this.Fields.ForEach(item => field += "{" + $"\"name\": \"{item.Name}\"," +
                                                            $"\"value\": \"{item.Value}\"," +
                                                            $"\"inline\": {(item.Inline ? "true" : "false")}" + "},");
 
-                field = (field[field.Length - 1] == ',' ? field.Remove(field.Length - 1, 1) : "") + "]";
-                field = field == "\"fields\":[]" ? "" : field;
-                field += (field != "" && footer != "\"footer\":[]") ? "," : "";
-                field = field == "]," ? "" : field;
+                field = (field[field.Length - 1] == ',' ? field.Remove(field.Length - 1, 1) : string.Empty) + "]";
+                field = field == "\"fields\":[]" ? string.Empty : field;
+                field += (field != string.Empty && footer != "\"footer\":[]") ? "," : string.Empty;
+                field = field == "]," ? string.Empty : field;
 
                 string ColorHEX = this.Color.R.ToString("X2") + this.Color.G.ToString("X2") + this.Color.B.ToString("X2");
-                string color = this.Color.IsEmpty ? "" : $"\"color\":\"{Convert.ToInt32(ColorHEX, 16)}\",";
-                string content = String.IsNullOrEmpty(this.Content) ? "" : $"\"content\":" + $"\"{this.Content}\", \"tts\":{(this.Tts ? "true" : "false")},";
-                string time = Timestamp != null ? $"\"timestamp\":\"{(((DateTime)Timestamp).ToString("yyyy-MM-ddTHH:mm:ssZ"))}\"," : "";
-                string title = String.IsNullOrEmpty(this.Title) ? "" : $"\"title\":\"{this.Title}\",";
+                string color = this.Color.IsEmpty ? string.Empty : $"\"color\":\"{Convert.ToInt32(ColorHEX, 16)}\",";
+                string content = String.IsNullOrEmpty(this.Content) ? string.Empty : $"\"content\":" + $"\"{this.Content}\", \"tts\":{(this.Tts ? "true" : "false")},";
+                string time = Timestamp != null ? $"\"timestamp\":\"{(((DateTime)Timestamp).ToString("yyyy-MM-ddTHH:mm:ssZ"))}\"," : string.Empty;
+                string title = String.IsNullOrEmpty(this.Title) ? string.Empty : $"\"title\":\"{this.Title}\",";
 
                 string jsonObject = "{" + $"{content}" +
                                     "\"embed\":{" +
@@ -462,12 +397,12 @@ namespace Qvoid.Authentication
 
                 try
                 {
-                    string responseStr = new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("}", "").Replace("{", " ");
+                    string responseStr = new StreamReader(((HttpWebResponse)request.GetResponse()).GetResponseStream()).ReadToEnd().Replace("}", string.Empty).Replace("{", " ");
                     string[] fields = responseStr.Split(',');
                     foreach (string field in fields)
                     {
                         int fieldLength = field.IndexOf('"', 2) - 2;
-                        string fieldValue = field.Substring(field.IndexOf(':') + 2).Replace("\"", "");
+                        string fieldValue = field.Substring(field.IndexOf(':') + 2).Replace("\"", string.Empty);
                         switch (field.Substring(2, fieldLength))
                         {
                             case "id":
@@ -538,7 +473,7 @@ namespace Qvoid.Authentication
                 request.ContentType = "application/json";
                 request.Method = "POST";
 
-                string message = "{" + $"\"content\":\"{Message}\",\"tts\":{(TTS ? "true" : "false")}" + "}";
+                string message = "{" + $"\"content\":\"{Message}\",\"tts\":{(TTS ? true : false)}" + "}";
 
                 StreamWriter streamW = new StreamWriter(request.GetRequestStream());
                 streamW.Write(message);
@@ -549,22 +484,22 @@ namespace Qvoid.Authentication
             public void Send(Discord.Embed embed, FileInfo file = null)
             {
                 WebClient webhookRequest = new WebClient();
-                string bound = "------------------------" + DateTime.Now.Ticks.ToString("x");
+                string bound = $"------------------------{DateTime.Now.Ticks.ToString("x")}";
 
                 using (var stream = new MemoryStream())
                 {
                     webhookRequest.Headers.Add("Content-Type", "multipart/form-data; boundary=" + bound);
-                    byte[] beginBodyBuffer = Encoding.UTF8.GetBytes("--" + bound + "\r\r\n");
+                    byte[] beginBodyBuffer = Encoding.UTF8.GetBytes($"--{bound}\r\r\n");
                     stream.Write(beginBodyBuffer, 0, beginBodyBuffer.Length);
                     bool flag = file != null && file.Exists;
                     if (flag)
                     {
-                        string fileBody = "Content-Disposition: form-data; name=\"file\"; filename=\"" + file.Name + "\"\r\r\nContent-Type: application/octet-stream\r\r\n\r\r\n";
+                        string fileBody = $"Content-Disposition: form-data; name=\"file\"; filename=\"{file.Name}\"\r\r\nContent-Type: application/octet-stream\r\r\n\r\r\n";
                         byte[] fileBodyBuffer = Encoding.UTF8.GetBytes(fileBody);
                         stream.Write(fileBodyBuffer, 0, fileBodyBuffer.Length);
                         byte[] fileBuffer = File.ReadAllBytes(file.FullName);
                         stream.Write(fileBuffer, 0, fileBuffer.Length);
-                        string fileBodyEnd = "\r\r\n--" + bound + "\r\r\n";
+                        string fileBodyEnd = $"\r\r\n--{bound}\r\r\n";
                         byte[] fileBodyEndBuffer = Encoding.UTF8.GetBytes(fileBodyEnd);
                         stream.Write(fileBodyEndBuffer, 0, fileBodyEndBuffer.Length);
                     }
@@ -605,7 +540,7 @@ namespace Qvoid.Authentication
             static public string Value()
             {
                 if (string.IsNullOrEmpty(fingerPrint))
-                    fingerPrint = GetHash(Encryption.ComputeSha256Hash("\r\nBASE >> " + BaseId() + "\r\nVIDEO >> " + VideoId() + "\r\nMAC >> " + MacId()));
+                    fingerPrint = GetHash(Encryption.ComputeSha256Hash($"\r\nBASE >> {BaseId()}\r\nVIDEO >> {VideoId()}\r\nMAC >> {MacId()}"));
 
                 return fingerPrint;
             }
@@ -646,7 +581,7 @@ namespace Qvoid.Authentication
             static private string identifier
             (string wmiClass, string wmiProperty, string wmiMustBeTrue)
             {
-                string result = "";
+                string result = string.Empty;
                 System.Management.ManagementClass mc =
                 new System.Management.ManagementClass(wmiClass);
                 System.Management.ManagementObjectCollection moc = mc.GetInstances();
@@ -655,7 +590,7 @@ namespace Qvoid.Authentication
                     if (mo[wmiMustBeTrue].ToString() == "True")
                     {
                         //Only get the first one
-                        if (result == "")
+                        if (result == string.Empty)
                         {
                             try
                             {
@@ -673,17 +608,17 @@ namespace Qvoid.Authentication
             //Return a hardware identifier
             static private string identifier(string wmiClass, string wmiProperty)
             {
-                string result = "";
+                string result = string.Empty;
                 ManagementClass mc = new ManagementClass(wmiClass);
                 ManagementObjectCollection moc = mc.GetInstances();
                 foreach (ManagementObject mo in moc)
                 {
-                    if (result == "")
+                    if (result == string.Empty)
                     {
                         try
                         {
                             var value = mo[wmiProperty];
-                            result = value == null ? "" : value.ToString();
+                            result = value == null ? string.Empty : value.ToString();
                             break;
                         }
                         catch { continue; }
@@ -693,25 +628,11 @@ namespace Qvoid.Authentication
             }
             
             //Motherboard ID
-            static private string BaseId()
-            {
-                return identifier("Win32_BaseBoard", "Model")
-                + identifier("Win32_BaseBoard", "Manufacturer")
-                + identifier("Win32_BaseBoard", "Name")
-                + identifier("Win32_BaseBoard", "SerialNumber");
-            }
+            static private string BaseId() => identifier("Win32_BaseBoard", "Model") + identifier("Win32_BaseBoard", "Manufacturer") + identifier("Win32_BaseBoard", "Name") + identifier("Win32_BaseBoard", "SerialNumber");
             //Primary video controller ID
-            static private string VideoId()
-            {
-                return identifier("Win32_VideoController", "DriverVersion")
-                + identifier("Win32_VideoController", "Name");
-            }
+            static private string VideoId() => identifier("Win32_VideoController", "DriverVersion") + identifier("Win32_VideoController", "Name");
             //First enabled network card ID
-            static private string MacId()
-            {
-                return identifier("Win32_NetworkAdapterConfiguration",
-                    "MACAddress", "IPEnabled");
-            }
+            static private string MacId() => identifier("Win32_NetworkAdapterConfiguration", "MACAddress", "IPEnabled");
             #endregion
         }
 
@@ -731,12 +652,9 @@ namespace Qvoid.Authentication
                 if (ip.AddressFamily == AddressFamily.InterNetwork)
                     return ip.ToString();
 
-            return "";
+            return string.Empty;
         }
 
-        static public string GetMachineIdentifier()
-        {
-            return FingerPrint.Value();
-        }
+        static public string GetMachineIdentifier() => FingerPrint.Value();
     }
 }
