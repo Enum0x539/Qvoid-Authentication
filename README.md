@@ -1,59 +1,77 @@
 # Qvoid-Authentication
-Advanced authentication system, can be used by everyone for free!
+🔐 "Who needs passwords when you have HWID lock on speed dial?"
 
-Stability: Experimental ⤵️ <br><br>
 [![Stability: Experimental](https://masterminds.github.io/stability/experimental.svg)](https://masterminds.github.io/stability/experimental.html)
 
-# Some information:
-I made this authentication system for one of my programs, I decided to release it as a library (Converting everything to user-friendly library); **this project is undone yet!**
+Qvoid-Authentication is an advanced, developer-friendly authentication system designed for C# applications — completely free and extensible.
+Built with performance in mind and powered by Firebase, this project aims to simplify secure user management, license control, and client communication.
 
-If you have found some bug that you would like to be fixed or you just want to give a suggestion, open an issue on the Issues tab.
+# 🧠 About the Project
 
-I think this library is better than lots of the paid authentication systems because FireBase is pretty fast and I tried to keep the code as much optimized as I can.
+Originally created for internal use in one of my personal tools, this system evolved into a general-purpose library that anyone can use and contribute to. While still experimental, it already offers features that rival many paid alternatives — without locking you behind a paywall.
 
-Have fun 😝
+🛠️ `“It works on my machine”` — me, after testing in debug mode once (jk!).
+    
+💥 Features
 
-# Features:
-* Supports Discord webhook integration.
-* Auto-update system.
-* Killswitch.
-* Blacklist system.
-* Some state functions.
-* HWID Lock.
-* Encryption system.
-* Licenses with specific duration.
-* And some general functions such as Login, Register, Create License.
+    ✅ Login, Register, Create License
 
-# Plans:
-* Make a Documentation.
-* Upload the auto-update system (it's already ready but I'm lazy to upload).
+    🎟️ Licensing system with expiration support
 
-# Getting started:
-If you don't have a FireBase account you will need to create one.
+    🛑 Kill switch for remote disable
 
-It will be much easier learning the FireBase interface by yourself or watching some tutorials on FireBase. 
+    🚫 HWID lock (because passwords are so last decade)
 
-After you have a FireBase account and you are connected, create a project and then create a "Realtime Database".
-Go to Project Settings -> Service Account -> Database Secrets and copy the key that is listed there.
+    ❌ Blacklist system
 
-```cs
-//Creating the credentials
+    🔐 Simple encryption
+
+    📡 Discord webhook integration
+
+    🔄 Auto-update system (lazy dev note: not pushed yet 😅)
+
+    📊 User state tracking (basic telemetry)
+    
+📦 Setup Instructions
+🧬 Prerequisites
+
+    A Firebase account.
+
+    A working Realtime Database in Firebase.
+
+🔧 Firebase Setup
+
+    Create a new Firebase project.
+
+    Enable the Realtime Database.
+
+    Navigate to Project Settings → Service Accounts → Database Secrets and copy your key.
+
+🚀 Getting Started
+```csharp
+// Step 1: Set up your credentials
 Credentials credentials = new Credentials()
 {
-    //The current version of this distribution, Should look like: "0.0.0"
-    Version = Version.Parse("1.0.0"),
-    
-    //The base address of the database, Should look like (Depends on the country you have chose): "https://test-b572d-default-rtdb.europe-west1.firebasedatabase.app/"
-    BaseAddress = "",
-    
-    //The database secret you have copied before, Should look like: "4RLlgzCxDQ62JmJMzfFpLFruqKfPHmZUFJq4rya4"
-    Token = ""
+    Version = Version.Parse("1.0.0"), // your app version
+    BaseAddress = "", // e.g. "https://your-app-id.firebaseio.com/"
+    Token = "" // your Firebase DB secret
 };
 
+// Step 2: Initialize the authentication system
 AuthSystem auth = new AuthSystem(credentials);
 
-//Now you can use the functions of the auth system, I will create short a documentation later.
+// You can now call auth.Login(), auth.Register(), auth.CreateLicense(), etc.
 ```
+
+🗺️ Roadmap
+
+🧾 Documentation
+
+📤 Push auto-update module
+
+🧪 More unit tests
+
+🎉 Maybe add a dashboard frontend?
 
 # LEGAL DISCLAIMER
 
